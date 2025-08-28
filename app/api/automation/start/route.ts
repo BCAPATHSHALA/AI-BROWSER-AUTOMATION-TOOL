@@ -9,12 +9,10 @@ export async function POST(request: NextRequest) {
 
     // Validate request
     const validatedData = AutomationRequestSchema.parse(body);
-    console.log("Starting automation with data:", validatedData);
 
     const automationAIResult = await chatWithAgent({
       userQuery: validatedData.prompt,
     });
-    console.log("AIAUTOMATION::::", automationAIResult);
 
     return NextResponse.json({
       success: true,
@@ -26,8 +24,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Automation start error:", error);
-
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
