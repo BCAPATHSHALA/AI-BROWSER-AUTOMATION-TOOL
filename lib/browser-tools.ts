@@ -182,6 +182,15 @@ export function createBrowserTools() {
     },
   });
 
+  const closeBrowser = tool({
+    name: "close_browser",
+    description: "Close browser",
+    parameters: z.object({}),
+    async execute(): Promise<void> {
+      await engine.close();
+    },
+  });
+
   return {
     initializeBrowser,
     takeScreenshot,
@@ -196,5 +205,6 @@ export function createBrowserTools() {
     scrollPage,
     selectOption,
     extractLinks,
+    closeBrowser,
   };
 }

@@ -4,6 +4,15 @@ import {
   type Page,
   type BrowserContext,
 } from "playwright";
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
 
 /*
  * Browser Automation Engine
@@ -127,30 +136,34 @@ export class BrowserAutomationEngine {
       throw new Error("Browser not initialized");
     }
 
+    const filePath = `./screenshots/screen_${Date.now()}.png`;
     try {
-      // const screenshot = await this.page.screenshot({
-      //   type: "png",
-      //   fullPage: true,
-      //   path: `screenshot_${Date.now()}.png`,
-      // });
-      const form = this.page.locator("form");
-      if ((await form.count()) > 0) {
-        await form.evaluate((f) => f.scrollIntoView());
-      } else {
-        await this.page.evaluate(() => window.scrollTo(0, 0));
-      }
-      const screenshot = form.screenshot({
+      // Screenshot with compression
+      await this.page.screenshot({
+        path: filePath,
         type: "png",
-        path: `screenshot_${Date.now()}.png`,
+        fullPage: true,
+        quality: 60,
       });
-      const screenshotBuffer = await screenshot;
-      const screenshotBase64 = screenshotBuffer.toString("base64");
-      // Todo: save image into cloudinary and return the url instead of base64 due to avoid the token limit issue & save LLM token usage
-      // const screenshotBase64 = screenshot.toString("base64");
-      // console.log("Screenshot in base64 format:", screenshotBase64);
-      // return `data:image/png;base64,${screenshotBase64}`;
-      return "data:image/png;base64," + `${screenshotBase64}`;
+
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(filePath, {
+        folder: "playwright_screenshots",
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      });
+
+      // Delete local file after upload
+      fs.unlinkSync(filePath);
+
+      // Return Cloudinary URL instead of base64
+      const secureURL = result.secure_url;
+      return `Screenshot URL: ${secureURL}`;
     } catch (error) {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
       throw new Error(`Failed to take screenshot: ${error}`);
     }
   }
@@ -231,7 +244,7 @@ export class BrowserAutomationEngine {
     }
 
     try {
-      await this.page.waitForSelector(selector, { timeout });
+      await this.page.waitForSelector(selector);
 
       return {
         success: true,
