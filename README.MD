@@ -10,6 +10,8 @@
 [![Node.js + Next.js](https://img.shields.io/badge/Runtime-Node.js%20%2B%20Next.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-Package_Manager-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io/)
 
+### [🎥 Youtube - 🤖 AI Agent for Browser Automation](https://youtu.be/5_bBhOWpedA)
+
 
 An AI-powered agent that can explore, interact with, and fill forms on websites using **Playwright** under the hood. It ensures safe, reliable, and explainable automation while preventing destructive actions (like auto-submitting forms without confirmation).
 
