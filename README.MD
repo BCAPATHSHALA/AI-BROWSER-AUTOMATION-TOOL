@@ -1,5 +1,16 @@
 # 🤖 AI Agent for Browser Automation
 
+[![Next.js 15](https://img.shields.io/badge/Next.js-v15-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Type%20Safety-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn--ui-Components-7b3fe4?style=for-the-badge)](https://github.com/shadcn)
+[![OpenAI Agents SDK](https://img.shields.io/badge/OpenAI-Agents_SDK-412991?style=for-the-badge&logo=openai&logoColor=white)](https://platform.openai.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-Browser_Automation-000000?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Zod](https://img.shields.io/badge/Zod-Validation-7a3fe4?style=for-the-badge&logo=zod&logoColor=white)](https://github.com/colinhacks/zod)
+[![Node.js + Next.js](https://img.shields.io/badge/Runtime-Node.js%20%2B%20Next.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-Package_Manager-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io/)
+
+
 An AI-powered agent that can explore, interact with, and fill forms on websites using **Playwright** under the hood. It ensures safe, reliable, and explainable automation while preventing destructive actions (like auto-submitting forms without confirmation).
 
 Built with **Next.js + Node.js + pnpm**, OpenAI’s `@openai/agents`, and custom Playwright engine.
