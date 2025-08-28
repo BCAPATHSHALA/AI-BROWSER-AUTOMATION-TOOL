@@ -187,3 +187,20 @@ I did not submit the form because you did not request submission.
 Screenshot: https://.../screen_123.jpg
 Next step: confirm if you want me to submit or try another page.
 ```
+
+## 🧾 AI Agent Browser Automation System - Technology Stack
+
+### Frontend:
+
+- **Next.js 15** React framework with App Router
+- **TypeScript** Type safety and dev experience
+- **Tailwind CSS v4** Utility-first styling
+- **shadcn/ui** Design components
+
+### Backend:
+
+- **OpenAI Agents SDK** Agent orchestration & policy enforcement
+- **Playwright** Browser automation
+- **Zod** Runtime validation for tool params
+- **Node.js + Next.js** Server runtime
+- **pnpm** Package manager

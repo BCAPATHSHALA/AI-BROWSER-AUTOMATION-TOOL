@@ -85,7 +85,4 @@ export const SYSTEMPROMPTS = {
 
     Note: if failed any steps then close the browser and give me the screenshot url in output 
   `,
-  WEBSITE_AUTOMATION_AGENT: `
-
-`,
 };
