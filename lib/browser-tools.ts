@@ -12,6 +12,29 @@ import type { AutomationResult } from "./browser-automation";
 const engine = new BrowserAutomationEngine();
 
 export function createBrowserTools() {
+  const initializeBrowser = tool({
+    name: "initialize_browser",
+    description:
+      "Initializes a Playwright browser session. Must be called before any navigation or interaction tools.",
+    parameters: z.object({}),
+    async execute(): Promise<AutomationResult> {
+      try {
+        await engine.initialize();
+        return {
+          success: true,
+          message: "Browser initialized successfully",
+          data: null,
+        };
+      } catch (error: any) {
+        return {
+          success: false,
+          message: "Failed to initialize browser",
+          data: null,
+          error: error.message || String(error),
+        };
+      }
+    },
+  });
   const takeScreenshot = tool({
     name: "take_screenshot",
     description:
@@ -160,6 +183,7 @@ export function createBrowserTools() {
   });
 
   return {
+    initializeBrowser,
     takeScreenshot,
     navigateToUrl,
     clickElement,

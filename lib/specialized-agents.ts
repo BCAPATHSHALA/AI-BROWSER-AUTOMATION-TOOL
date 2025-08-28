@@ -15,6 +15,7 @@ import { RECOMMENDED_PROMPT_PREFIX } from "@openai/agents-core/extensions";
 const createBrowserNavigationAgent = () => {
   const browserTools = createBrowserTools();
   const {
+    initializeBrowser,
     takeScreenshot,
     navigateToUrl,
     clickElement,
@@ -25,6 +26,7 @@ const createBrowserNavigationAgent = () => {
   return new Agent({
     name: "Browser Navigation Agent",
     tools: [
+      initializeBrowser,
       takeScreenshot,
       navigateToUrl,
       clickElement,
@@ -57,6 +59,7 @@ const createBrowserNavigationAgent = () => {
 const createFormAutomationAgent = () => {
   const browserTools = createBrowserTools();
   const {
+    initializeBrowser,
     takeScreenshot,
     fillInput,
     selectOption,
@@ -68,6 +71,7 @@ const createFormAutomationAgent = () => {
   return new Agent({
     name: "Form Automation Agent",
     tools: [
+      initializeBrowser,
       takeScreenshot,
       fillInput,
       selectOption,
@@ -102,6 +106,7 @@ const createFormAutomationAgent = () => {
 const createDataExtractionAgent = () => {
   const browserTools = createBrowserTools();
   const {
+    initializeBrowser,
     takeScreenshot,
     extractText,
     extractLinks,
@@ -112,6 +117,7 @@ const createDataExtractionAgent = () => {
   return new Agent({
     name: "Data Extraction Agent",
     tools: [
+      initializeBrowser,
       takeScreenshot,
       extractText,
       extractLinks,
