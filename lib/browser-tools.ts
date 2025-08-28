@@ -101,7 +101,7 @@ export function createBrowserTools() {
       timeout: z
         .number()
         .optional()
-        .default(10000)
+        .default(60000)
         .describe("Timeout in milliseconds"),
     }),
     async execute({ selector, timeout }): Promise<AutomationResult> {

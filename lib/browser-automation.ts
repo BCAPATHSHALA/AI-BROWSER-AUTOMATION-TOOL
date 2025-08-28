@@ -159,7 +159,7 @@ export class BrowserAutomationEngine {
 
       // Return Cloudinary URL instead of base64
       const secureURL = result.secure_url;
-      return `Screenshot URL: ${secureURL}`;
+      return `screenshotUrl: ${secureURL}`;
     } catch (error) {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
@@ -237,7 +237,7 @@ export class BrowserAutomationEngine {
 
   async waitForElement(
     selector: string,
-    timeout = 10000
+    timeout = 60000
   ): Promise<AutomationResult> {
     if (!this.page) {
       throw new Error("Browser not initialized");
