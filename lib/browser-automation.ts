@@ -141,7 +141,7 @@ export class BrowserAutomationEngine {
       // Screenshot with compression
       await this.page.screenshot({
         path: filePath,
-        type: "png",
+        type: "jpeg",
         fullPage: true,
         quality: 60,
       });

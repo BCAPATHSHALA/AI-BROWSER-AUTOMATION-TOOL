@@ -12,7 +12,19 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, Play, Square, AlertCircle } from "lucide-react";
+import {
+  Bot,
+  Play,
+  CheckCircle,
+  Info,
+  XCircle,
+  Camera,
+  Wifi,
+  Heart,
+  Clock,
+  User,
+  Terminal,
+} from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 
 interface AutomationLog {
@@ -39,7 +51,6 @@ export function BrowserAutomationInterface() {
       const response = await apiClient.startAutomation(prompt);
 
       if (response.success) {
-        // Add initial log: history: any; lastAgent?: string; response: any
         setLogs([
           {
             id: Date.now().toString(),
@@ -69,7 +80,58 @@ export function BrowserAutomationInterface() {
     }
   };
 
-  console.log("LOGS::::", logs);
+  const getLogTypeConfig = (type: AutomationLog["type"]) => {
+    switch (type) {
+      case "success":
+        return {
+          icon: CheckCircle,
+          bgColor: "bg-green-50 dark:bg-green-950/20",
+          borderColor: "border-green-200 dark:border-green-800",
+          iconColor: "text-green-600 dark:text-green-400",
+          badgeVariant: "default" as const,
+        };
+      case "error":
+        return {
+          icon: XCircle,
+          bgColor: "bg-red-50 dark:bg-red-950/20",
+          borderColor: "border-red-200 dark:border-red-800",
+          iconColor: "text-red-600 dark:text-red-400",
+          badgeVariant: "destructive" as const,
+        };
+      case "screenshot":
+        return {
+          icon: Camera,
+          bgColor: "bg-purple-50 dark:bg-purple-950/20",
+          borderColor: "border-purple-200 dark:border-purple-800",
+          iconColor: "text-purple-600 dark:text-purple-400",
+          badgeVariant: "secondary" as const,
+        };
+      case "connected":
+        return {
+          icon: Wifi,
+          bgColor: "bg-blue-50 dark:bg-blue-950/20",
+          borderColor: "border-blue-200 dark:border-blue-800",
+          iconColor: "text-blue-600 dark:text-blue-400",
+          badgeVariant: "outline" as const,
+        };
+      case "heartbeat":
+        return {
+          icon: Heart,
+          bgColor: "bg-pink-50 dark:bg-pink-950/20",
+          borderColor: "border-pink-200 dark:border-pink-800",
+          iconColor: "text-pink-600 dark:text-pink-400",
+          badgeVariant: "outline" as const,
+        };
+      default:
+        return {
+          icon: Info,
+          bgColor: "bg-blue-50 dark:bg-blue-950/20",
+          borderColor: "border-blue-200 dark:border-blue-800",
+          iconColor: "text-blue-600 dark:text-blue-400",
+          badgeVariant: "outline" as const,
+        };
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -102,7 +164,7 @@ export function BrowserAutomationInterface() {
               </label>
               <Textarea
                 id="prompt"
-                placeholder="Example: Go to example.com and fill out the contact form with name 'John Doe' and email 'john@example.com'"
+                placeholder="Example: Go to 10xtechinfinity.in and fill out the contact form with name 'Manoj Kumar' and email 'contact@10xtechinfinity.in'"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 rows={4}
@@ -127,7 +189,7 @@ export function BrowserAutomationInterface() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5" />
+              <Terminal className="h-5 w-5" />
               Automation Logs
               {logs.length > 0 && (
                 <Badge variant="outline" className="ml-auto">
@@ -142,119 +204,241 @@ export function BrowserAutomationInterface() {
           <CardContent>
             <ScrollArea className="h-96 space-y-4 pr-2">
               {logs.length === 0 ? (
-                <p className="text-muted-foreground text-sm">No logs yet...</p>
+                <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                  <Terminal className="h-12 w-12 text-muted-foreground/50 mb-4" />
+                  <p className="text-muted-foreground text-sm">
+                    No logs yet...
+                  </p>
+                  <p className="text-muted-foreground/70 text-xs mt-1">
+                    Start an automation to see logs here
+                  </p>
+                </div>
               ) : (
-                logs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="p-3 rounded-lg border bg-card text-sm space-y-3"
-                  >
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        {log.timestamp}
-                      </span>
-                      <Badge
-                        variant={
-                          log.type === "error"
-                            ? "destructive"
-                            : log.type === "success"
-                            ? "default"
-                            : "outline"
-                        }
+                <div className="space-y-3">
+                  {logs.map((log) => {
+                    const config = getLogTypeConfig(log.type);
+                    const IconComponent = config.icon;
+
+                    return (
+                      <div
+                        key={log.id}
+                        className={`p-4 rounded-lg border transition-all hover:shadow-sm ${config.bgColor} ${config.borderColor}`}
                       >
-                        {log.type}
-                      </Badge>
-                    </div>
-
-                    {/* Message */}
-                    <p className="font-medium">{log.message}</p>
-
-                    {/* Last Agent */}
-                    {log.data?.lastAgent && (
-                      <p className="text-xs">
-                        <strong className="text-blue-600">Last Agent:</strong>{" "}
-                        {log.data.lastAgent}
-                      </p>
-                    )}
-
-                    {/* Final Output */}
-                    {log.data?.finalOutput && (
-                      <div className="text-xs bg-muted p-2 rounded-md">
-                        <strong>Final Output:</strong> {log.data.finalOutput}
-                      </div>
-                    )}
-
-                    {/* Full History */}
-                    {log.data?.history && (
-                      <details className="mt-2">
-                        <summary className="cursor-pointer text-xs text-blue-600">
-                          Show full history ({log.data.history.length} steps)
-                        </summary>
-                        <div className="mt-2 space-y-3 text-xs bg-muted p-3 rounded-md">
-                          {log.data.history.map((h: any, i: number) => (
-                            <div
-                              key={i}
-                              className="border-b pb-2 last:border-0 last:pb-0"
-                            >
-                              <p>
-                                <strong>Type:</strong> {h.type}
-                              </p>
-                              {h.role && (
-                                <p>
-                                  <strong>Role:</strong> {h.role}
-                                </p>
-                              )}
-                              {h.name && (
-                                <p>
-                                  <strong>Name:</strong> {h.name}
-                                </p>
-                              )}
-                              {h.status && (
-                                <p>
-                                  <strong>Status:</strong> {h.status}
-                                </p>
-                              )}
-                              {h.callId && (
-                                <p>
-                                  <strong>Call ID:</strong> {h.callId}
-                                </p>
-                              )}
-                              {h.arguments && (
-                                <pre className="bg-background border rounded p-2 mt-1 whitespace-pre-wrap break-all">
-                                  {h.arguments}
-                                </pre>
-                              )}
-                              {h.content && (
-                                <pre className="bg-background border rounded p-2 mt-1 whitespace-pre-wrap break-all">
-                                  {typeof h.content === "string"
-                                    ? h.content
-                                    : JSON.stringify(h.content, null, 2)}
-                                </pre>
-                              )}
-                              {h.output && (
-                                <pre className="bg-background border rounded p-2 mt-1 whitespace-pre-wrap break-all">
-                                  {typeof h.output === "string"
-                                    ? h.output
-                                    : JSON.stringify(h.output, null, 2)}
-                                </pre>
-                              )}
-                            </div>
-                          ))}
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <IconComponent
+                              className={`h-4 w-4 ${config.iconColor}`}
+                            />
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {log.timestamp}
+                            </span>
+                          </div>
+                          <Badge
+                            variant={config.badgeVariant}
+                            className="text-xs"
+                          >
+                            {log.type.toUpperCase()}
+                          </Badge>
                         </div>
-                      </details>
-                    )}
 
-                    {/* Screenshot if any */}
-                    {log.screenshot && (
-                      <img
-                        src={log.screenshot}
-                        alt="screenshot"
-                        className="mt-2 rounded border"
-                      />
-                    )}
-                  </div>
-                ))
+                        {/* Message */}
+                        <p className="font-medium text-sm mb-3 leading-relaxed">
+                          {log.message}
+                        </p>
+
+                        {/* Last Agent */}
+                        {log.data?.lastAgent && (
+                          <div className="flex items-center gap-2 mb-3 p-2 bg-background/50 rounded-md">
+                            <User className="h-3 w-3 text-blue-600" />
+                            <span className="text-xs">
+                              <strong className="text-blue-600">
+                                Active Agent:
+                              </strong>{" "}
+                              <code className="bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5 rounded text-blue-700 dark:text-blue-300">
+                                {log.data.lastAgent}
+                              </code>
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Final Output */}
+                        {log.data?.finalOutput && (
+                          <div className="mb-3 p-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <CheckCircle className="h-3 w-3 text-green-600" />
+                              <strong className="text-xs text-green-700 dark:text-green-300">
+                                Final Output:
+                              </strong>
+                            </div>
+                            <p className="text-xs text-green-800 dark:text-green-200 leading-relaxed">
+                              {log.data.finalOutput}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Full History */}
+                        {log.data?.history && (
+                          <details className="mt-3">
+                            <summary className="cursor-pointer text-xs text-blue-600 hover:text-blue-800 dark:hover:text-blue-400 flex items-center gap-1 p-2 bg-blue-50 dark:bg-blue-950/30 rounded-md transition-colors">
+                              <Terminal className="h-3 w-3" />
+                              Show execution history ({
+                                log.data.history.length
+                              }{" "}
+                              steps)
+                            </summary>
+                            <div className="mt-3 space-y-3 max-h-64 overflow-y-auto">
+                              {log.data.history.map((h: any, i: number) => (
+                                <div
+                                  key={i}
+                                  className="p-3 bg-background border rounded-md text-xs space-y-2"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className="bg-muted px-2 py-1 rounded text-xs font-mono">
+                                        Step {i + 1}
+                                      </span>
+                                      {h.type && (
+                                        <Badge
+                                          variant="outline"
+                                          className="text-xs"
+                                        >
+                                          {h.type}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    {h.status && (
+                                      <Badge
+                                        variant={
+                                          h.status === "success"
+                                            ? "default"
+                                            : "secondary"
+                                        }
+                                        className="text-xs"
+                                      >
+                                        {h.status}
+                                      </Badge>
+                                    )}
+                                  </div>
+
+                                  <div className="grid grid-cols-1 gap-2">
+                                    {h.role && (
+                                      <div>
+                                        <strong className="text-muted-foreground">
+                                          Role:
+                                        </strong>{" "}
+                                        <code className="bg-muted px-1 py-0.5 rounded">
+                                          {h.role}
+                                        </code>
+                                      </div>
+                                    )}
+                                    {h.name && (
+                                      <div>
+                                        <strong className="text-muted-foreground">
+                                          Name:
+                                        </strong>{" "}
+                                        <code className="bg-muted px-1 py-0.5 rounded">
+                                          {h.name}
+                                        </code>
+                                      </div>
+                                    )}
+                                    {h.callId && (
+                                      <div>
+                                        <strong className="text-muted-foreground">
+                                          Call ID:
+                                        </strong>{" "}
+                                        <code className="bg-muted px-1 py-0.5 rounded text-xs">
+                                          {h.callId}
+                                        </code>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {h.arguments && (
+                                    <div>
+                                      <strong className="text-muted-foreground block mb-1">
+                                        Arguments:
+                                      </strong>
+                                      <pre className="bg-muted/50 border rounded p-2 text-xs whitespace-pre-wrap break-all overflow-x-auto">
+                                        {h.arguments}
+                                      </pre>
+                                    </div>
+                                  )}
+                                  {h.content && (
+                                    <div>
+                                      <strong className="text-muted-foreground block mb-1">
+                                        Content:
+                                      </strong>
+                                      <pre className="bg-muted/50 border rounded p-2 text-xs whitespace-pre-wrap break-all overflow-x-auto">
+                                        {typeof h.content === "string"
+                                          ? h.content
+                                          : JSON.stringify(h.content, null, 2)}
+                                      </pre>
+                                    </div>
+                                  )}
+                                  {h.output && (
+                                    <div>
+                                      <strong className="text-muted-foreground block mb-1">
+                                        Output:
+                                      </strong>
+                                      <pre className="bg-muted/50 border rounded p-2 text-xs whitespace-pre-wrap break-all overflow-x-auto">
+                                        {typeof h.output === "string"
+                                          ? h.output
+                                          : JSON.stringify(h.output, null, 2)}
+                                      </pre>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+
+                        {/* Screenshot */}
+                        {log.screenshot && (
+                          <div className="mt-3 p-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Camera className="h-3 w-3 text-purple-600" />
+                              <strong className="text-xs text-purple-700 dark:text-purple-300">
+                                Screenshot Captured
+                              </strong>
+                            </div>
+                            <div className="space-y-2">
+                              <a
+                                href={log.screenshot.replace(
+                                  "Screenshot URL: ",
+                                  ""
+                                )}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block"
+                              >
+                                <Badge
+                                  variant="secondary"
+                                  className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
+                                >
+                                  <Camera className="h-3 w-3 mr-1" />
+                                  View Full Screenshot
+                                </Badge>
+                              </a>
+                              <img
+                                src={
+                                  log.screenshot.replace(
+                                    "Screenshot URL: ",
+                                    ""
+                                  ) || "/placeholder.svg"
+                                }
+                                alt="Automation screenshot"
+                                className="rounded border max-h-48 w-full object-contain bg-white"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </ScrollArea>
           </CardContent>
