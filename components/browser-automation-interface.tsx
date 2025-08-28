@@ -24,8 +24,11 @@ import {
   Clock,
   User,
   Terminal,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
+import Link from "next/link";
 
 interface AutomationLog {
   id: string;
@@ -135,14 +138,49 @@ export function BrowserAutomationInterface() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-balance mb-2">
+      <div className="mb-12 space-y-4">
+        <h1 className="text-4xl font-bold tracking-tight">
           AI Browser Automation
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-lg max-w-2xl">
           Automate web interactions using AI agents powered by OpenAI and
-          Playwright
+          Playwright.
         </p>
+
+        <div className="flex items-center gap-2">
+          <Badge variant="destructive" className="text-white">
+            OPENAPI KEY NOT AVAILABLE IN PRODUCTION
+          </Badge>
+        </div>
+
+        <p className="text-sm text-muted-foreground">
+          Setup locally & read docs from:
+        </p>
+
+        <div className="flex items-center gap-3 flex-wrap">
+          <Link
+            href="https://github.com/BCAPATHSHALA/AI-BROWSER-AUTOMATION-TOOL"
+            target="_blank"
+          >
+            <Badge variant="secondary">Github</Badge>
+          </Link>
+
+          <span className="text-sm font-medium text-muted-foreground">
+            Follow us:
+          </span>
+
+          <Link href="https://linkedin.com/in/manojofficialmj" target="_blank">
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Linkedin className="h-4 w-4" /> /in/manojofficialmj
+            </Badge>
+          </Link>
+
+          <Link href="https://x.com/manojofficialmj" target="_blank">
+            <Badge variant="outline" className="flex items-center gap-1">
+              <Twitter className="h-4 w-4" /> /manojofficialmj
+            </Badge>
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
