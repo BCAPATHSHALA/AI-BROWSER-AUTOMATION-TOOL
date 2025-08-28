@@ -191,6 +191,16 @@ export function createBrowserTools() {
     },
   });
 
+  const findContactForm = tool({
+    name: "find_contact_form",
+    description:
+      "Tries to locate a contact form or similar form (feedback, support, enquiry)",
+    parameters: z.object({}),
+    async execute(): Promise<AutomationResult> {
+      return await engine.findContactForm();
+    },
+  });
+
   return {
     initializeBrowser,
     takeScreenshot,
@@ -206,5 +216,6 @@ export function createBrowserTools() {
     selectOption,
     extractLinks,
     closeBrowser,
+    findContactForm,
   };
 }

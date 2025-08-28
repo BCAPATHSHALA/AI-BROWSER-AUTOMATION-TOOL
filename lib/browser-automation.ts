@@ -405,6 +405,60 @@ export class BrowserAutomationEngine {
     );
   }
 
+  async findContactForm(): Promise<AutomationResult> {
+    if (!this.page) {
+      throw new Error("Browser not initialized");
+    }
+
+    try {
+      const selectors = [
+        "form#contact",
+        "form[action*='contact']",
+        "form[action*='support']",
+        "form[action*='feedback']",
+        "form:has(input[name*='email'])",
+        "[id*='contact']",
+        "[class*='contact']",
+        "[id*='support']",
+        "[class*='support']",
+        "[id*='feedback']",
+        "[class*='feedback']",
+      ];
+
+      let found = null;
+      for (const sel of selectors) {
+        try {
+          const el = await this.page.$(sel);
+          if (el) {
+            found = sel;
+            break;
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      if (!found) {
+        return {
+          success: false,
+          message: "No contact-like form found",
+        };
+      }
+
+      return {
+        success: true,
+        message: `Found contact form using selector: ${found}`,
+        data: { selector: found },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Error finding contact form",
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
+
   isInitialized(): boolean {
     return this.browser !== null && this.page !== null;
   }

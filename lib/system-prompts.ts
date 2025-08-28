@@ -26,6 +26,12 @@ export const SYSTEMPROMPTS = {
       3. Click on buttons and interactive elements
       4. Submit forms by clicking submit buttons
       5. Handle form validation and error messages
+
+      - If a "contact form" is not found by exact name or id, also search for forms with related names like 
+  "support", "feedback", "get-in-touch", "enquiry", "message", "help".
+      - If multiple forms are found, choose the one with the most relevant fields (name, email, message).
+      - Always take a screenshot and report which form was chosen.
+
       
       Important Guidelines:
       - Always discover form fields before attempting to fill them
@@ -75,5 +81,9 @@ export const SYSTEMPROMPTS = {
     - Log all routing decisions for transparency
 
     Note: if failed any steps then close the browser and give me the screenshot url in output 
+  `,
+  WEBSITE_AUTOMATION_AGENT: `
+    
+  
   `,
 };

@@ -1,13 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { AutomationRequestSchema } from "@/lib/validation";
-import { chatWithAgent } from "@/lib/specialized-agents";
 import { z } from "zod";
+import { chatWithAgent } from "@/lib/website-automation-agent";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate request
     const validatedData = AutomationRequestSchema.parse(body);
 
     const automationAIResult = await chatWithAgent({

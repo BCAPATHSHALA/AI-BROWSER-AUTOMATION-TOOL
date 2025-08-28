@@ -52,6 +52,7 @@ const createFormAutomationAgent = () => {
     findFormFields,
     findButtons,
     closeBrowser,
+    findContactForm,
   } = browserTools;
 
   return new Agent({
@@ -65,6 +66,7 @@ const createFormAutomationAgent = () => {
       findFormFields,
       findButtons,
       closeBrowser,
+      findContactForm,
     ],
     instructions: ` ${SYSTEMPROMPTS.FORM_AUTOMATION_AGENT}`,
   });
