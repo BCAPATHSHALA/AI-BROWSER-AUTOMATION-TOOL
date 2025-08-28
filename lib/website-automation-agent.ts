@@ -49,17 +49,18 @@ const runner = new Runner({
   model: "gpt-4o-mini",
 });
 
-export const chatWithAgent = async ({
-  userQuery,
-}: {
-  userQuery: string;
-}): Promise<{ history: any; lastAgent?: string; finalOutput: any }> => {
-  const agent = websiteAutomationAgent();
-  const result = await runner.run(agent, userQuery);
-  const aiResponse = {
-    history: result.history,
-    lastAgent: result.lastAgent?.name,
-    finalOutput: result.finalOutput,
-  };
-  return aiResponse;
+export const chatWithAgent = async ({ userQuery }: { userQuery: string }) => {
+  try {
+    const agent = websiteAutomationAgent();
+    const result = await runner.run(agent, userQuery);
+    const aiResponse = {
+      history: result.history,
+      lastAgent: result.lastAgent?.name,
+      finalOutput: result.finalOutput,
+    };
+    return aiResponse;
+  } catch (err) {
+    console.error("Agent Error:", err);
+    throw new Error("Automation task failed due to timeout or invalid input.");
+  }
 };

@@ -4,7 +4,6 @@ import {
   type Page,
   type BrowserContext,
 } from "playwright";
-import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 
 // Cloudinary config
@@ -108,14 +107,19 @@ export class BrowserAutomationEngine {
 
   async initialize(): Promise<void> {
     try {
+      if (this.browser) {
+        await this.close(); // prevent multiple browsers open
+      }
+
       this.browser = await chromium.launch({
-        headless: this.options.headless,
         args: [
           "--disable-extensions",
           "--disable-file-system",
           "--no-sandbox",
           "--disable-setuid-sandbox",
         ],
+        headless: this.options.headless ?? true, // keep true in production
+        timeout: this.options.timeout ?? 30000, // safety
       });
 
       this.context = await this.browser.newContext({
@@ -135,7 +139,12 @@ export class BrowserAutomationEngine {
         console.error(`[Browser Error] ${error.message}`);
       });
     } catch (error) {
-      throw new Error(`Failed to initialize browser: ${error}`);
+      await this.close(); // cleanup before throwing
+      throw new Error(
+        `Failed to initialize browser: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 
@@ -186,7 +195,12 @@ export class BrowserAutomationEngine {
       // });
 
       // directly upload buffer (no fs usage)
-      const result = await uploadBufferToCloudinary(Buffer.from(buffer));
+      const result = await uploadBufferToCloudinary(Buffer.from(buffer)).catch(
+        (err) => {
+          console.error("Cloudinary Upload Error:", err);
+          throw new Error("Screenshot upload failed, please retry.");
+        }
+      );
 
       // Delete local file after upload
       // fs.unlinkSync(filePath);
@@ -195,7 +209,6 @@ export class BrowserAutomationEngine {
       const secureURL = result.secure_url;
       return `screenshotUrl: ${secureURL}`;
     } catch (error) {
-      console.error("takeScreenshot error:", error);
       throw new Error(
         `Failed to take screenshot: ${
           error instanceof Error ? error.message : String(error)
