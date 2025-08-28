@@ -1,7 +1,7 @@
 import { Agent, Runner } from "@openai/agents";
 import { createBrowserTools } from "./browser-tools";
 import { RECOMMENDED_PROMPT_PREFIX } from "@openai/agents-core/extensions";
-import { SYSTEMPROMPTS } from "./SystemPrompts";
+import { SYSTEMPROMPTS } from "./system-prompts";
 
 /*
  * Specialized Agents

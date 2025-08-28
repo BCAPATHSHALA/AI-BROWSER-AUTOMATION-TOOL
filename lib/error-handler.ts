@@ -39,17 +39,6 @@ export class ValidationError extends Error {
   }
 }
 
-export class SessionError extends Error {
-  constructor(
-    message: string,
-    public sessionId: string,
-    public statusCode = 404
-  ) {
-    super(message);
-    this.name = "SessionError";
-  }
-}
-
 export function handleApiError(error: unknown): NextResponse<ApiError> {
   console.error("API Error:", error);
 
@@ -74,19 +63,6 @@ export function handleApiError(error: unknown): NextResponse<ApiError> {
         error: "Validation error",
         message: error.message,
         details: error.details.errors,
-      },
-      { status: error.statusCode }
-    );
-  }
-
-  // Session errors
-  if (error instanceof SessionError) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Session error",
-        message: error.message,
-        code: "SESSION_ERROR",
       },
       { status: error.statusCode }
     );

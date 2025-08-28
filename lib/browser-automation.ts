@@ -174,7 +174,7 @@ export class BrowserAutomationEngine {
     }
 
     try {
-      await this.page.waitForSelector(selector, { timeout: 10000 });
+      await this.page.waitForSelector(selector);
       await this.page.click(selector);
 
       return {
@@ -196,7 +196,7 @@ export class BrowserAutomationEngine {
     }
 
     try {
-      await this.page.waitForSelector(selector, { timeout: 10000 });
+      await this.page.waitForSelector(selector);
       await this.page.fill(selector, value);
 
       return {
@@ -218,7 +218,7 @@ export class BrowserAutomationEngine {
     }
 
     try {
-      await this.page.waitForSelector(selector, { timeout: 10000 });
+      await this.page.waitForSelector(selector);
       const text = await this.page.textContent(selector);
 
       return {
