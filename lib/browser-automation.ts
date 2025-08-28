@@ -59,6 +59,37 @@ export interface AutomationResult {
   error?: string;
 }
 
+// helper to upload buffer using upload_stream due to vercel server
+function uploadBufferToCloudinary(
+  buffer: Buffer,
+  publicIdPrefix = "playwright_screenshots/"
+) {
+  return new Promise<{ secure_url: string; public_id: string }>(
+    (resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "playwright_screenshots",
+          resource_type: "image",
+          use_filename: true,
+          unique_filename: false,
+          overwrite: true,
+          format: "jpg",
+          transformation: [{ quality: "auto" }],
+        },
+        (error: any, result: any) => {
+          if (error) return reject(error);
+          resolve({
+            secure_url: result.secure_url,
+            public_id: result.public_id,
+          });
+        }
+      );
+
+      uploadStream.end(buffer);
+    }
+  );
+}
+
 // Class to manage browser automation using Playwright
 export class BrowserAutomationEngine {
   private browser: Browser | null = null;
@@ -136,35 +167,40 @@ export class BrowserAutomationEngine {
       throw new Error("Browser not initialized");
     }
 
-    const filePath = `./screenshots/screen_${Date.now()}.png`;
+    // const filePath = `./screenshots/screen_${Date.now()}.png`;
     try {
       // Screenshot with compression
-      await this.page.screenshot({
-        path: filePath,
+      const buffer = await this.page.screenshot({
+        // path: filePath,
         type: "jpeg",
         fullPage: true,
         quality: 60,
       });
 
       // Upload to Cloudinary
-      const result = await cloudinary.uploader.upload(filePath, {
-        folder: "playwright_screenshots",
-        use_filename: true,
-        unique_filename: false,
-        overwrite: true,
-      });
+      // const result = await cloudinary.uploader.upload(filePath, {
+      //   folder: "playwright_screenshots",
+      //   use_filename: true,
+      //   unique_filename: false,
+      //   overwrite: true,
+      // });
+
+      // directly upload buffer (no fs usage)
+      const result = await uploadBufferToCloudinary(Buffer.from(buffer));
 
       // Delete local file after upload
-      fs.unlinkSync(filePath);
+      // fs.unlinkSync(filePath);
 
       // Return Cloudinary URL instead of base64
       const secureURL = result.secure_url;
       return `screenshotUrl: ${secureURL}`;
     } catch (error) {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-      throw new Error(`Failed to take screenshot: ${error}`);
+      console.error("takeScreenshot error:", error);
+      throw new Error(
+        `Failed to take screenshot: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 
